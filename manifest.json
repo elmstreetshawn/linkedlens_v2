@@ -3,7 +3,7 @@
   "name": "LinkedLens - LinkedIn AI Detector",
   "version": "0.2",
   "description": "Detects likely AI-generated content in LinkedIn posts and comments.",
-  "permissions": ["scripting", "activeTab"],
+  "permissions": ["scripting", "activeTab", "storage"],
   "host_permissions": ["https://www.linkedin.com/*"],
   "background": {
     "service_worker": "background.js",

@@ -58,13 +58,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => { // Mak
     badge.className = 'linkedlens-ai-badge';
     badge.textContent = `🤖 AI Score: ${score}%`;
 
+    const isDarkMode = document.documentElement.classList.contains('theme--dark');
+    const badgeBackgroundColor = isDarkMode ? '#313335' : '#eef3f8'; // Match LI dark/light theme background
+
     const styles = document.createElement('style');
     styles.textContent = `
       .linkedlens-ai-badge {
         display: inline-flex;
         align-items: center;
         padding: 4px 8px;
-        background-color: #eef3f8;
+        background-color: ${badgeBackgroundColor};
         border-radius: 4px;
         font-weight: 600;
         font-size: 12px;

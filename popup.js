@@ -45,6 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
           postsContainer.textContent = "Click 'Scan Posts' to analyze the page.";
         }
       });
+    } else {
+      // Handle case where no active tab is found
+      postsContainer.textContent = "Could not identify the active LinkedIn tab. Please refresh the page and try again.";
     }
   });
 });
