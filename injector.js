@@ -138,8 +138,9 @@ async function runIgnoreSequence(postId) {
     const postElement = document.querySelector(`div[data-urn="${postId}"]`);
     if (!postElement) throw new Error("Could not find the target post element on the page.");
 
-    // 1. Click the three-dot control menu on the post
-    await findAndClick('.feed-shared-control-menu__trigger', '', postElement);
+    // 1. Click the three-dot control menu on the post.
+    // Using the aria-label is more robust than relying on CSS classes which can change.
+    await findAndClick('button[aria-label*="control menu"]', '', postElement);
     await sleep(500); // Wait for dropdown menu to appear
 
     // 2. Click "Report post" from the dropdown (searches the whole document)
