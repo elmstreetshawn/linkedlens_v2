@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>LinkedLens AI Detector</title>
+    <meta name="description" content="A browser extension to detect AI-generated content on LinkedIn.">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; padding: 10px; width: 400px; background-color: #f4f4f4; max-height:700px;height:auto; overflow-y: auto; }
+      h3 { font-size: 16px; color: #333; }
+      button { width: 100%; padding: 10px; font-size: 14px; font-weight: bold; color: white; background-color: #0a66c2; border: none; border-radius: 4px; cursor: pointer; }
+      button:hover { background-color: #004182; }
+      #posts { margin-top: 10px; max-height: 500px; overflow-y: auto; }
+      .post {
+        background-color: white;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        margin-bottom: 10px;
+      }
+      .post h3 {
+        font-size: 14px;
+        margin: 0 0 8px 0;
+        color: #191919;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .post h3 .score { font-weight: normal; color: #0a66c2; font-size: 12px; }
+      .post .verdict {
+        font-size: 13px;
+        font-weight: 500;
+        margin: 0 0 8px 0;
+        color: #333;
+      }
+      .post .actions {
+        margin-top: 10px;
+        text-align: right;
+      }
+      .post .ignore-button {
+        background-color: #d11124; /* A reddish color for ignore/report */
+        color: white;
+        border: none; border-radius: 3px; padding: 4px 8px; font-size: 11px; cursor: pointer;
+      }
+      .post .ignore-button:hover { background-color: #a70e1c; }
+      .post .ignore-button:disabled { background-color: #666; cursor: not-allowed; }
+      .post .content { font-size: 12px; white-space: pre-wrap; word-wrap: break-word; color: #555; margin: 0; }
+      #footer {
+        margin-top: 20px;
+        font-size: 12px;
+        color: #555;
+        text-align: center;
+      }
+      #footer a {
+        color: #0a66c2;
+        text-decoration: none;
+      }
+      #footer a:hover {
+        text-decoration: underline;
+      }
+      @media (prefers-color-scheme: dark) {
+        body { background-color: #181818; color: #f4f4f4; }
+        h3 { color: #f4f4f4; }
+        button { background-color: #0a66c2; color: white; }
+        button:hover { background-color: #004182; }
+        .post { background-color: #242424; border-color: #333; }
+        .post h3 { color: #f4f4f4; }
+        .post .verdict { color: #ddd; }
+        .post .content { color: #ccc; }
+        .post .ignore-button:disabled { background-color: #444; }
+        #footer { color: #ccc; }
+        #footer a { color: #0a66c2; }
+        #footer a:hover { text-decoration: underline; }
+      }
+     
+    </style>
+  </head>
+  <body>
+    <h3>LinkedLens</h3>
+    <button id="scan">Scan Posts</button>
+    <div id="loader" style="display: none; text-align: center; padding: 20px;">Scanning...</div>
+    <div id="posts"></div>
+    <div id="footer">
+      <p>Powered by <a href="https://automatetowin.com/patterns-of-ai-generated-content" target="_blank" rel="noopener">Automate to Win</a></p>
+      <p>Created by <a href="https://github.com/elmstreetshawn">Shawn David: Systems Engineer</a></p>
+    </div>
+    <script src="popup.js"></script>
+  </body>
+</html>
