@@ -1,5 +1,16 @@
 console.log("LinkedLens Injector loaded.");
 
+/**
+ * Determines the color for the AI score badge based on the score.
+ * @param {number} score - The AI score (0-100).
+ * @returns {string} A CSS color string.
+ */
+function getScoreColor(score) {
+  if (score >= 70) return '#d11124'; // Red for high AI probability
+  if (score >= 45) return '#b45d00'; // Orange for medium AI probability
+  return '#055808'; // Green for low AI probability
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => { // Make listener async
   // Listen for the message to inject the AI score
   if (request.message === "injectAiScore") {
@@ -28,6 +39,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => { // Mak
       const badge = existingContainer.shadowRoot.querySelector('.linkedlens-ai-badge');
       if (badge) {
         badge.textContent = `🤖 AI Score: ${score}%`;
+        badge.style.color = getScoreColor(score);
       }
       return;
     }
@@ -42,22 +54,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => { // Mak
 
     // 3. Create the UI elements to live inside the shadow DOM
     const badge = document.createElement('div');
+    badge.style.color = getScoreColor(score); // Apply dynamic color
     badge.className = 'linkedlens-ai-badge';
     badge.textContent = `🤖 AI Score: ${score}%`;
 
     const styles = document.createElement('style');
     styles.textContent = `
       .linkedlens-ai-badge {
+        display: inline-flex;
+        align-items: center;
         padding: 4px 8px;
         background-color: #eef3f8;
-        color: #00000099;
         border-radius: 4px;
         font-weight: 600;
         font-size: 12px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       }`;
 
-    // 4. Append the styles and the badge to the shadow root, then append the container to the page
+    // 4. Append the styles and the badge to the shadow root, then append the container to the page.
     shadowRoot.appendChild(styles);
     shadowRoot.appendChild(badge);
     socialActionBar.appendChild(container);
@@ -145,11 +159,23 @@ async function runIgnoreSequence(postId) {
 
     console.log(`[LinkedLens] Successfully ignored author for post: ${postId}`);
     // Send a success message back to the popup
-    chrome.runtime.sendMessage({ message: "ignorePostSuccess", postId: postId });
+    chrome.runtime.sendMessage({ message: "ignorePostSuccess", postId: postId })
+      .catch(error => {
+        // This error is expected if the popup is closed. We can safely ignore it.
+        if (!error.message.includes("Receiving end does not exist")) {
+          console.error("[LinkedLens] Error sending success message:", error);
+        }
+      });
 
   } catch (error) {
     console.error("[LinkedLens] Ignore sequence failed:", error);
     // Send a failure message back to re-enable the button in the popup
-    chrome.runtime.sendMessage({ message: "ignorePostFailure", postId: postId });
+    chrome.runtime.sendMessage({ message: "ignorePostFailure", postId: postId })
+      .catch(error => {
+        // This error is expected if the popup is closed. We can safely ignore it.
+        if (!error.message.includes("Receiving end does not exist")) {
+          console.error("[LinkedLens] Error sending failure message:", error);
+        }
+      });
   }
 }
