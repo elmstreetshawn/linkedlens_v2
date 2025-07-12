@@ -8,8 +8,10 @@ Just unzip it to a folder, turn on dev mode for chrome and then load an unpacked
 
 If you want to see some more information about this:
 
-automatetowin.com/ai-content-humanizer/
-automatetowin.com/patterns-of-ai-generated-content
+https://automatetowin.com/ai-content-humanizer/
+
+https://automatetowin.com/patterns-of-ai-generated-content
+
 https://youtu.be/TrI4SBISGRs
 
 Hopefully this can help you identify the losers posting AI slop on your feed.
