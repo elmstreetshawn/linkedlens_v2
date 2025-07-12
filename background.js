@@ -30,14 +30,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       break;
 
     case "postsExtracted":
-      if (!tabId) return; // Exit if we don't have a tab ID to send messages to
+      if (!tabId) return; // Exit if we don't have a tab ID
 
       // 1. Analyze each post using the imported detection algorithm
       const postsWithScores = request.data.map(post => {
         const analysis = scoreHumanContent(post.content);
-        // Combine the original post data with the full analysis results
         return { ...post, score: analysis.aiScore, verdict: analysis.verdict };
       });
+
+      // A. Save the results to session storage, keyed by the tab ID
+      const storageKey = `lastScanResults_${tabId}`;
+      chrome.storage.session.set({ [storageKey]: postsWithScores });
 
       // 2. Send a message to the content script (injector.js) for each post to inject the UI
       postsWithScores.forEach(post => {
@@ -45,11 +48,22 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           message: "injectAiScore",
           postId: post.id,
           score: post.score // The injector only needs the score
+        }).catch(error => {
+          // This error can happen if the content script is not ready or the tab is closed.
+          if (!error.message.includes("Receiving end does not exist")) {
+            console.error("[LinkedLens] Error injecting score:", error);
+          }
         });
       });
 
       // 3. Send the analyzed data back to the popup for display
-      chrome.runtime.sendMessage({ message: "postsAnalyzed", data: postsWithScores });
+      chrome.runtime.sendMessage({ message: "postsAnalyzed", data: postsWithScores, tabId: tabId })
+        .catch(error => {
+          // This error is expected if the popup is closed after scanning. We can safely ignore it.
+          if (!error.message.includes("Receiving end does not exist")) {
+            console.error("[LinkedLens] Error sending analysis to popup:", error);
+          }
+        });
       break;
   }
 });
